@@ -19,19 +19,19 @@ const ListHeader: FC = () => {
   const classes = useStyles();
   return (
     <Grid container className={classes.root}>
-      <Grid item xs={1}>
+      <Grid item xs={2}>
         <Typography className={classes.text}>ID</Typography>
       </Grid>
       <Grid item xs={3}>
         <Typography className={classes.text}>Requested by</Typography>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={2}>
         <Typography className={classes.text}>Create date</Typography>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={2}>
         <Typography className={classes.text}>Due date</Typography>
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={3}>
         <Typography className={classes.text}>Status</Typography>
       </Grid>
     </Grid>

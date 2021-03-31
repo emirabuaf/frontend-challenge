@@ -1,19 +1,23 @@
 import React, { FC } from 'react';
-import { Box, createStyles, makeStyles } from '@material-ui/core';
+import { Box, createStyles, makeStyles, Hidden } from '@material-ui/core';
 import { ListHeader } from './ListHeader';
 import { ListBody } from './ListBody';
+import { TicketsListMobile } from './TicketsListMobile';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
     root: {
       height: 'calc(100% - 66px)',
-      padding: theme.spacing(3),
+      "@media (min-width: 768px)": {
+        padding: theme.spacing(3),
+      }
     },
     list: {
       height: '100%',
       background: '#FFFFFF',
       borderRadius: 15,
       padding: theme.spacing(2, 3, 4),
+      overflow: "auto",
     },
   })
 );
@@ -24,8 +28,13 @@ const TicketsList: FC = () => {
   return (
     <Box component="main" className={classes.root}>
       <Box className={classes.list}>
-        <ListHeader />
-        <ListBody />
+        <Hidden xsDown>
+          <ListHeader />
+          <ListBody />
+        </Hidden>
+        <Hidden mdUp>
+          <TicketsListMobile />
+        </Hidden>
       </Box>
     </Box>
   );
