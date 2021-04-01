@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme) =>
   createStyles({
     delete: {
       cursor: 'pointer',
+      display: "flex"
     },
   })
 );

@@ -4,6 +4,8 @@ import { CenteredCircularProgress } from '../CenteredCircularProgress';
 import { NothingFound } from '../NothingFound';
 import { ListItem } from './ListItem';
 import { Box, createStyles, Grid, makeStyles } from '@material-ui/core';
+import { Ticket } from '../../shared/types';
+
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -23,7 +25,7 @@ type ListBodyProps = {};
 const ListBody: FC<ListBodyProps> = () => {
   const classes = useStyles();
   const { isLoading, data: tickets } = useTickets();
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<Ticket[]>([]);
 
   useEffect(() => {
     fetch('api/tickets')
@@ -46,8 +48,6 @@ const ListBody: FC<ListBodyProps> = () => {
         'Content-Type': 'application/json',
       },
     })
-      .then(() => console.log('deleted'))
-      .catch((error) => console.log(error));
   };
 
   const isEmptyContent = !isLoading && !tickets?.length;

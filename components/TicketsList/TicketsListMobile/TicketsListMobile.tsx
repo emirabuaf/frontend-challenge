@@ -2,6 +2,8 @@ import React, { FC, useState, useEffect } from 'react';
 import { Box, Grid, createStyles, makeStyles, Typography, Chip } from '@material-ui/core';
 import { DeleteIcon } from '../../../svg/DeleteIcon';
 import { formatToDate } from '../ListItem';
+import { Ticket } from '../../../shared/types';
+
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -17,12 +19,27 @@ const useStyles = makeStyles((theme) =>
     header: {
       marginBottom: '4px',
     },
+    status: {
+        width: '101px',
+        height: '19px',
+        borderRadius: 4,
+        fontSize: 11,
+        lineHeight: '15px',
+        fontWeight: theme.typography.fontWeightBold,
+        color: '#FFFFFF',
+    },
+    openBackgroundColor: {
+        backgroundColor: '#5B994C',
+    },
+    closedBackgroundColor: {
+        backgroundColor:"#616161"
+    }
   })
 );
 
 const TicketsListMobile: FC = () => {
   const classes = useStyles();
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<Ticket[]>([]);
 
   useEffect(() => {
     fetch('api/tickets')
@@ -35,10 +52,24 @@ const TicketsListMobile: FC = () => {
       });
   }, []);
 
+
+  const deleteUser = (id: number) => {
+    const newUsers = users.filter((user) => user.id !== id);
+    setUsers(newUsers);
+    fetch(`/api/tickets/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+  };
+
+
   return (
-    <Grid className={classes.root}>
+    <Grid>
       {users.map((user) => (
-        <Box className={classes.user}>
+        <Box key={user.id} className={classes.user}>
           <Box className={classes.row}>
             <Grid item xs={6}>
               <Typography className={classes.header}>ID</Typography>
@@ -62,10 +93,10 @@ const TicketsListMobile: FC = () => {
           <Box className={classes.row}>
             <Grid item xs={6}>
               <Typography className={classes.header}>Status</Typography>
-              <Chip label={user.status} />
+              <Chip label={user.status} className={classes.status + " " + (user.status == "OPEN" ? classes.openBackgroundColor : classes.closedBackgroundColor)} />
             </Grid>
             <Grid item xs={6}>
-              <DeleteIcon />
+            <DeleteIcon handleDelete={() => deleteUser(user.id)}/>
             </Grid>
           </Box>
         </Box>

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "test": "react-scripts test",
     "start": "next start",
     "migrate": "prisma migrate dev --preview-feature",
     "generate": "prisma generate",

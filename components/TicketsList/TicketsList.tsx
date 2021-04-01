@@ -28,11 +28,11 @@ const TicketsList: FC = () => {
   return (
     <Box component="main" className={classes.root}>
       <Box className={classes.list}>
-        <Hidden xsDown>
+        <Hidden xsDown >
           <ListHeader />
           <ListBody />
         </Hidden>
-        <Hidden mdUp>
+        <Hidden smUp >
           <TicketsListMobile />
         </Hidden>
       </Box>

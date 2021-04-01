@@ -10,7 +10,7 @@ const useStyles = makeStyles<Theme,Ticket>((theme) =>
   createStyles({
     root: {
       borderBottom: '1px solid #F1F1F1',
-      padding: theme.spacing(2, 1.5),
+      padding: theme.spacing(3, 1.5, 2.25),
     },
     text: {
       fontWeight: theme.typography.fontWeightLight,
