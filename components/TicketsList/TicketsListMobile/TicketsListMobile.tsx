@@ -3,14 +3,17 @@ import { Box, Grid, createStyles, makeStyles, Typography, Chip } from '@material
 import { DeleteIcon } from '../../../svg/DeleteIcon';
 import { formatToDate } from '../ListItem';
 import { Ticket } from '../../../shared/types';
+import { CenteredCircularProgress } from '../../CenteredCircularProgress';
 
+import { useTickets } from '../../../hooks/useTickets';
+import { NothingFound } from '../../NothingFound';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
     row: {
       display: 'flex',
       marginBottom: '28px',
-      alignItems: "flex-end",
+      alignItems: 'flex-end',
     },
     user: {
       borderBottom: '1px solid #F1F1F1',
@@ -20,25 +23,26 @@ const useStyles = makeStyles((theme) =>
       marginBottom: '4px',
     },
     status: {
-        width: '101px',
-        height: '19px',
-        borderRadius: 4,
-        fontSize: 11,
-        lineHeight: '15px',
-        fontWeight: theme.typography.fontWeightBold,
-        color: '#FFFFFF',
+      width: '101px',
+      height: '19px',
+      borderRadius: 4,
+      fontSize: 11,
+      lineHeight: '15px',
+      fontWeight: theme.typography.fontWeightBold,
+      color: '#FFFFFF',
     },
     openBackgroundColor: {
-        backgroundColor: '#5B994C',
+      backgroundColor: '#5B994C',
     },
     closedBackgroundColor: {
-        backgroundColor:"#616161"
-    }
+      backgroundColor: '#616161',
+    },
   })
 );
 
 const TicketsListMobile: FC = () => {
   const classes = useStyles();
+  const { isLoading, data: tickets } = useTickets();
   const [users, setUsers] = useState<Ticket[]>([]);
 
   useEffect(() => {
@@ -52,7 +56,6 @@ const TicketsListMobile: FC = () => {
       });
   }, []);
 
-
   const deleteUser = (id: number) => {
     const newUsers = users.filter((user) => user.id !== id);
     setUsers(newUsers);
@@ -62,45 +65,58 @@ const TicketsListMobile: FC = () => {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-    })
+    });
   };
 
+  const isEmptyContent = !isLoading && !tickets?.length;
 
   return (
     <Grid>
-      {users.map((user) => (
-        <Box key={user.id} className={classes.user}>
-          <Box className={classes.row}>
-            <Grid item xs={6}>
-              <Typography className={classes.header}>ID</Typography>
-              <Typography>{user.id}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography className={classes.header}>Requested by</Typography>
-              <Typography>{`${user.user.firstName} ${user.user.lastName}`}</Typography>
-            </Grid>
+      {isLoading && <CenteredCircularProgress />}
+      {isEmptyContent ? (
+        <NothingFound />
+      ) : (
+        users.map((user) => (
+          <Box key={user.id} className={classes.user}>
+            <Box className={classes.row}>
+              <Grid item xs={6}>
+                <Typography className={classes.header}>ID</Typography>
+                <Typography>{user.id}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography className={classes.header}>Requested by</Typography>
+                <Typography>{`${user.user.firstName} ${user.user.lastName}`}</Typography>
+              </Grid>
+            </Box>
+            <Box className={classes.row}>
+              <Grid item xs={6}>
+                <Typography className={classes.header}>Create date</Typography>
+                <Typography>{formatToDate(user.createdAt)}</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography className={classes.header}>Due date</Typography>
+                <Typography>{formatToDate(user.dueDate)}</Typography>
+              </Grid>
+            </Box>
+            <Box className={classes.row}>
+              <Grid item xs={6}>
+                <Typography className={classes.header}>Status</Typography>
+                <Chip
+                  label={user.status}
+                  className={
+                    classes.status +
+                    ' ' +
+                    (user.status == 'OPEN' ? classes.openBackgroundColor : classes.closedBackgroundColor)
+                  }
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <DeleteIcon handleDelete={() => deleteUser(user.id)} />
+              </Grid>
+            </Box>
           </Box>
-          <Box className={classes.row}>
-            <Grid item xs={6}>
-              <Typography className={classes.header}>Create date</Typography>
-              <Typography>{formatToDate(user.createdAt)}</Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography className={classes.header}>Due date</Typography>
-              <Typography>{formatToDate(user.dueDate)}</Typography>
-            </Grid>
-          </Box>
-          <Box className={classes.row}>
-            <Grid item xs={6}>
-              <Typography className={classes.header}>Status</Typography>
-              <Chip label={user.status} className={classes.status + " " + (user.status == "OPEN" ? classes.openBackgroundColor : classes.closedBackgroundColor)} />
-            </Grid>
-            <Grid item xs={6}>
-            <DeleteIcon handleDelete={() => deleteUser(user.id)}/>
-            </Grid>
-          </Box>
-        </Box>
-      ))}
+        ))
+      )}
     </Grid>
   );
 };
